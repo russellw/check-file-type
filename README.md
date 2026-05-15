@@ -27,25 +27,49 @@ Exits with code 1 if any mismatches are found, 0 otherwise.
 | WebP | `.webp` |
 | BMP | `.bmp` `.dib` |
 | TIFF | `.tif` `.tiff` |
+| ICO | `.ico` |
+| CUR | `.cur` |
+| HEIC/HEIF | `.heic` `.heif` |
+| AVIF | `.avif` |
+| Photoshop | `.psd` `.psb` |
 | PDF | `.pdf` |
-| ZIP (and ZIP-based) | `.zip` `.jar` `.war` `.apk` `.docx` `.xlsx` `.pptx` `.odt` `.epub` … |
+| Word document | `.docx` `.docm` |
+| Excel spreadsheet | `.xlsx` `.xlsm` `.xlsb` |
+| PowerPoint presentation | `.pptx` `.pptm` |
+| ODF text | `.odt` |
+| ODF spreadsheet | `.ods` |
+| ODF presentation | `.odp` |
+| ODF drawing | `.odg` |
+| EPUB | `.epub` |
+| ZIP | `.zip` `.cbz` `.ipa` `.xpi` `.crx` |
 | GZIP | `.gz` `.tgz` `.gzip` `.svgz` |
 | BZIP2 | `.bz2` `.tbz2` |
 | XZ | `.xz` `.txz` |
 | 7-Zip | `.7z` |
 | RAR | `.rar` |
 | TAR | `.tar` |
+| Zstandard | `.zst` |
+| LZ4 | `.lz4` |
 | MP3 | `.mp3` |
 | FLAC | `.flac` |
 | OGG | `.ogg` `.oga` `.ogv` `.opus` |
 | WAV | `.wav` `.wave` |
+| AIFF | `.aiff` `.aif` `.aifc` |
 | AVI | `.avi` |
-| MP4/MOV | `.mp4` `.m4v` `.m4a` `.mov` |
+| MP4/M4x | `.mp4` `.m4v` `.m4a` `.m4b` `.m4p` |
+| QuickTime | `.mov` `.qt` |
 | Matroska/WebM | `.mkv` `.webm` `.mka` |
 | ELF binary | `.elf` `.so` `.out` |
 | PE binary | `.exe` `.dll` `.sys` `.scr` |
+| Mach-O binary | `.dylib` `.o` |
+| WebAssembly | `.wasm` |
 | Java class | `.class` |
+| Java archive | `.jar` `.war` `.ear` |
+| Android package | `.apk` |
 | PostScript | `.ps` `.eps` `.ai` |
+| SQLite database | `.db` `.sqlite` `.sqlite3` `.db3` |
+| RPM package | `.rpm` |
+| AR/DEB archive | `.a` `.deb` |
 
 ## Build
 
