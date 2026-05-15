@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -211,10 +212,11 @@ func detect(data []byte) *fileType {
 	return nil
 }
 
-func checkFile(path string) (mismatch bool, msg string) {
-	ext := strings.ToLower(strings.TrimPrefix(filepath.Ext(path), "."))
+// checkFile returns the detected fileType and current extension if they mismatch, nil otherwise.
+func checkFile(path string) (ext string, ft *fileType) {
+	ext = strings.ToLower(strings.TrimPrefix(filepath.Ext(path), "."))
 	if ext == "" {
-		return false, ""
+		return "", nil
 	}
 
 	f, err := os.Open(path)
@@ -226,31 +228,48 @@ func checkFile(path string) (mismatch bool, msg string) {
 	buf := make([]byte, 4096)
 	n, _ := f.Read(buf)
 	if n == 0 {
-		return false, ""
+		return "", nil
 	}
 	buf = buf[:n]
 
-	ft := detect(buf)
+	ft = detect(buf)
 	if ft == nil {
-		return false, ""
+		return "", nil
 	}
 	for _, e := range ft.extensions {
 		if e == ext {
-			return false, ""
+			return "", nil
 		}
 	}
-	return true, fmt.Sprintf("%s: extension .%s does not match content (%s)", path, ext, ft.name)
+	return ext, ft
 }
 
-func walkPath(path string) (mismatches int) {
+func handleMismatch(path, ext string, ft *fileType, rename bool) (counted bool) {
+	if !rename {
+		fmt.Printf("%s: extension .%s does not match content (%s)\n", path, ext, ft.name)
+		return true
+	}
+	newPath := strings.TrimSuffix(path, filepath.Ext(path)) + "." + ft.extensions[0]
+	if _, err := os.Stat(newPath); err == nil {
+		fmt.Printf("%s: would rename to %s but destination already exists\n", path, newPath)
+		return true
+	}
+	if err := os.Rename(path, newPath); err != nil {
+		panic(err)
+	}
+	fmt.Printf("renamed %s -> %s\n", path, newPath)
+	return true
+}
+
+func walkPath(path string, rename bool) (mismatches int) {
 	info, err := os.Stat(path)
 	if err != nil {
 		panic(err)
 	}
 	if !info.IsDir() {
-		mismatch, msg := checkFile(path)
-		if mismatch {
-			fmt.Println(msg)
+		ext, ft := checkFile(path)
+		if ft != nil {
+			handleMismatch(path, ext, ft, rename)
 			return 1
 		}
 		return 0
@@ -262,9 +281,9 @@ func walkPath(path string) (mismatches int) {
 		if fi.IsDir() {
 			return nil
 		}
-		mismatch, msg := checkFile(p)
-		if mismatch {
-			fmt.Println(msg)
+		ext, ft := checkFile(p)
+		if ft != nil {
+			handleMismatch(p, ext, ft, rename)
 			mismatches++
 		}
 		return nil
@@ -276,13 +295,15 @@ func walkPath(path string) (mismatches int) {
 }
 
 func main() {
-	args := os.Args[1:]
+	rename := flag.Bool("rename", false, "rename files to the correct extension")
+	flag.Parse()
+	args := flag.Args()
 	if len(args) == 0 {
 		args = []string{"."}
 	}
 	mismatches := 0
 	for _, arg := range args {
-		mismatches += walkPath(arg)
+		mismatches += walkPath(arg, *rename)
 	}
 	if mismatches > 0 {
 		os.Exit(1)

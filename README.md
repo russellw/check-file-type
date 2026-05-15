@@ -4,7 +4,7 @@ Verify consistency between file extension and file contents.
 ## Usage
 
 ```
-check-file-type [file|dir ...]
+check-file-type [-rename] [file|dir ...]
 ```
 
 Checks each file by reading its magic bytes and comparing against the extension. Directories are walked recursively. If no arguments are given, the current directory is scanned.
@@ -16,6 +16,16 @@ path/to/file.jpg: extension .jpg does not match content (PNG image)
 ```
 
 Exits with code 1 if any mismatches are found, 0 otherwise.
+
+### Options
+
+`-rename` — rename each mismatched file to use the correct extension:
+
+```
+renamed path/to/file.jpg -> path/to/file.png
+```
+
+If the destination filename already exists, the file is left in place and a warning is printed.
 
 ## Supported formats
 
